@@ -30,29 +30,34 @@ You can also embed plots, for example:
 ```{r}
 # importing csv, metadata file, selected variables
 
+# importing csv, metadata file, selected variables
+setwd("/Users/habbasi/Desktop/050919_Nathianel_Gray/Scripts")
 plate.list <-c('BR00100032', 'BR00100037')
 f.path <- NULL
 
+
 for (p in 1:length(plate.list)) {
-  f.path[p]<- paste0("/Users/habbasi/Desktop/050919_Nathianel_Gray/", plate.list[p], "/", plate.list[p], ".csv")
-  metafile[p] <- paste0("/Users/habbasi/Desktop/050919_Nathianel_Gray/", plate.list[p], "/", plate.list[p], "_Metadata.csv")
-  file_varselect[p] <- paste0("/Users/habbasi/Desktop/050919_Nathianel_Gray/", plate.list[p], "/", plate.list[p],"_normalized_variable_selected.csv")
+  f.path[p]<- paste0("../", plate.list[p], "/", plate.list[p], ".csv")
+  metafile[p] <- paste0("../", plate.list[p], "/", plate.list[p], "_Metadata.csv")
+  file_varselect[p] <- paste0("../", plate.list[p], "/", plate.list[p],"_normalized_variable_selected.csv")
   variables_imp <- as.data.frame(readr::read_csv(file_varselect[p]), stringsAsFactors =F)
-  varlist <- colnames(variables_imp)[which(!str_detect(colnames(file_varselect), "Metadata_"))]
+  varlist <- colnames(variables_imp)[which(!str_detect(colnames(variables_imp), "Metadata_"))]
 
   
 # REading files
 
 df <- data.frame(readr::read_csv(f.path[p]), stringsAsFactors =F)
 pmeta <- data.frame(readr::read_csv(metafile[p]), stringsAsFactors =F)
-metadata <- colnames(data)[which(str_detect(colnames(data), "Metadata_"))]
-variables <- colnames(data)[which(!str_detect(colnames(data), "Metadata_"))]
+metadata <- colnames(df)[which(str_detect(colnames(df), "Metadata_"))]
+variables <- colnames(df)[which(!str_detect(colnames(df), "Metadata_"))]
 variables_s <- intersect(variables, varlist)
 
 # Merging Metadata information
 data <- merge(df, pmeta,
                       by.x = c("Metadata_Plate","Metadata_Well"),
                       by.y = c("Metadata_Plate", "Metadata_Well"))
+
+meta <- colnames(data)[which(str_detect(colnames(data), "Metadata_"))]
 
 
 # Filtering control cells and sampling number is equal to the no of treatments
@@ -72,14 +77,12 @@ dmso <- dmso[train_indx, ]
 data_scaled <- scale(data[, variables_s], center = mn, scale = sdv)
     
 data_scaled <- as.data.frame(data_scaled)
-df_meta <- data %>% select(metadata) %>% dplyr::collect()
+df_meta <- data %>% select(meta) %>% dplyr::collect()
 profile  <- cbind(df_meta, data_scaled)
 
-readr::write_csv(profile, paste0("/Users/habbasi/Desktop/050919_Nathianel_Gray/", plate.list[p], "/", plate.list[p], "_normalized_sampled_variable_selected.csv")) 
+readr::write_csv(profile, paste0("../", plate.list[p], "/", plate.list[p], "_normalized_sampled_variable_selectedtest.csv")) 
 
 }
-
-
 
 
 ```
