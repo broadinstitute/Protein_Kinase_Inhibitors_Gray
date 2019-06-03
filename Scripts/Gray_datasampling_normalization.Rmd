@@ -38,7 +38,7 @@ for (p in 1:length(plate.list)) {
   metafile[p] <- paste0("/Users/habbasi/Desktop/050919_Nathianel_Gray/", plate.list[p], "/", plate.list[p], "_Metadata.csv")
   file_varselect[p] <- paste0("/Users/habbasi/Desktop/050919_Nathianel_Gray/", plate.list[p], "/", plate.list[p],"_normalized_variable_selected.csv")
   variables_imp <- as.data.frame(readr::read_csv(file_varselect[p]), stringsAsFactors =F)
-  varlist <- colnames(variables_imp)[which(!str_detect(colnames(profile_varselect), "Metadata_"))]
+  varlist <- colnames(variables_imp)[which(!str_detect(colnames(file_varselect), "Metadata_"))]
 
   
 # REading files
